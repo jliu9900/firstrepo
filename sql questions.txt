@@ -1,0 +1,154 @@
+
+-------------------------------------------------------------------------------
+
+/*
+ * QUESTION 1 (10 points)
+ * --------------------
+ *
+ * Provide the SQL statement that returns from the table 'songs', the song names,
+ * number of YouTube views, and dates of release (dob) of all the songs by the 
+ * artist 'EXO'. Order the results by number of views (lo to hi).
+ *
+ */
+
+-- START ANSWER --
+
+select song_name, yt_views, dor
+from songs 
+where artist = 'EXO'
+order by yt_views;
+
+-- END ANSWER --
+
+-------------------------------------------------------------------------------
+
+/*
+ * QUESTION 2 (10 points)
+ * --------------------
+ *
+ * Provide the SQL statement that returns from the table 'songs', the song names 
+ * and artists of the ten newest pop videos with at least 100 million views. 
+ * A pop video is one in which its genre equals 'Pop'. Order the alphabetically 
+ * by song name (A to Z).
+ *
+ */
+
+-- START ANSWER --
+
+select song_name, artist, age(dor) song_age
+from songs
+where genre = 'Pop' and yt_views > 100000000
+order by song_age
+limit 10;
+
+-- END ANSWER --
+
+-------------------------------------------------------------------------------
+
+/*
+ * QUESTION 3 (15 points)
+ * --------------------
+ *
+ * Provide the SQL statement that returns from the table 'songs', the song names,
+ * artists, likes, dislikes, and views of songs by the artist 'Marshmello' (either
+ * on his own or as a collaboration with other artists). Order the results 
+ * by number of likes (hi to lo).
+ *
+ */
+
+-- START ANSWER --
+
+select song_name, artist, likes, dislikes, yt_views
+from songs 
+where artist ilike 'Marshmello' or artist ilike '%Marshmello%'
+order by likes desc;
+
+-- END ANSWER --
+
+-------------------------------------------------------------------------------
+
+/*
+ * QUESTION 4 (15 points)
+ * --------------------
+ *
+ * Provide the SQL statement that returns from the table 'songs',
+ * the song names and artists of exactly 15 random songs with a rating 
+ * of 0.98 or higher. The rating is calculated as the ratio of likes to the 
+ * sum of likes and dislikes for each song.
+ *
+ */
+
+-- START ANSWER --
+
+select song_name
+     , artist
+     , 1.0 * likes/(likes + dislikes) rating
+from songs
+where 1.0 * likes/(likes + dislikes) >= 0.98
+order by random()
+limit 15;
+
+-- END ANSWER --
+
+-------------------------------------------------------------------------------
+
+/*
+ * QUESTION 5 (25 points)
+ * --------------------
+ *
+ * Provide the SQL statement that returns from the table 'plays',
+ * all of the unique songs (artist, song_name, genre) played
+ * on the first day of every month. Order the results alphabetically
+ * by genre (A to Z), then by artist (A to Z), then by song name (A to Z).
+ *   
+ */
+
+-- START ANSWER --
+
+select distinct artist
+	 , song_name
+	 , genre 
+from plays 
+where date_part('day', play_dt) = 1
+order by 3, 1, 2;
+
+-- END ANSWER --
+
+-------------------------------------------------------------------------------
+
+/*
+ * QUESTION 6 (25 points)
+ * --------------------
+ *
+ * Provide the SQL statement that returns from the table 'plays',
+ * the list of song names, artists, and genres meeting ALL of the following
+ * criteria:
+ *
+ *  - played between the hours of 11 AM and 4 PM inclusively
+ *  - played during the Summer of 2020 (between 6/20 and 9/21)
+ *  - not played during the Fall of 2020 (between 9/22 and 12/20)
+ *
+ * For example, if  a song was played on 7/25 and also on 10/31, this
+ * should not be in the final list. It would only be included if it was never
+ * played during Fall 2020.
+ * 
+ */
+
+-- START ANSWER --
+
+select song_name 
+	 , artist
+	 , genre
+from plays
+where date_part('hour', play_dt) between 11 and 16
+and play_dt between '6/20/20 00:00:00' and '9/21/20 23:59:59'
+except
+select song_name
+	 , artist
+	 , genre
+from plays 
+where play_dt between '9/22/20 00:00:00' and '12/20/20 23:59:59';
+
+-- END ANSWER --
+
+-------------------------------------------------------------------------------
