@@ -1,2 +1,2 @@
 # firstrepo
-Testing the repositroy.  
+Testing the repository.
