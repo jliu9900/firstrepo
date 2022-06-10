@@ -1,2 +1,2 @@
-# firstrepo
-Testing the repository.
+# repo1
+Exploring GitHub repo.
